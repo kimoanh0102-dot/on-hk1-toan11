@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Ôn Tập Toán 11 - 4 Đề Full (Final Checked)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+        body { font-family: 'Nunito', sans-serif; }
+        .math-tex { display: inline-block; }
+        .hidden-section { display: none !important; }
+        .option-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+        .true-false-btn.selected { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .true-false-btn.correct { background-color: #10b981; color: white; border-color: #10b981; }
+        .true-false-btn.wrong { background-color: #ef4444; color: white; border-color: #ef4444; }
+        .exam-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        
+        /* Table styles */
+        .stats-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px; font-size: 0.9em; }
+        .stats-table th, .stats-table td { border: 1px solid #d1d5db; padding: 6px; text-align: center; }
+        .stats-table th { background-color: #f3f4f6; font-weight: bold; color: #374151; }
+        .stats-table tr:nth-child(even) { background-color: #f9fafb; }
+        
+        /* Animation */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        /* Loading Spinner */
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #09f; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition" onclick="location.reload()">
+                <i class="fas fa-graduation-cap text-2xl"></i>
+                <div>
+                    <h1 class="text-xl font-bold">Ôn Tập Toán 11</h1>
+                    <p class="text-xs text-blue-200 opacity-90">Học kì 1 - Năm học 2025-2026</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                 <div id="student-info-badge" class="hidden-section text-sm bg-white/10 px-3 py-1 rounded">
+                    <i class="fas fa-user mr-1"></i> <span id="header-student-name">Học sinh</span>
+                </div>
+                <div id="timer-badge" class="hidden-section bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm font-mono font-bold border border-white/30">
+                    <i class="fas fa-clock mr-2"></i><span id="timer">45:00</span>
+                </div>
+                <button id="header-submit-btn" onclick="submitGame()" class="hidden-section bg-green-500 hover:bg-green-600 text-white text-sm font-bold py-1.5 px-4 rounded shadow transition">
+                    Nộp Bài
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-5xl flex-grow">
+        
+        <!-- Exam Selection Screen -->
+        <div id="exam-selection" class="animate-fade-in">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-extrabold text-gray-800 mb-3">Chọn Đề Ôn Tập</h2>
+                <p class="text-gray-600">Hệ thống gồm 4 đề chuẩn cấu trúc mới nhất</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Đề 1 -->
+                <div onclick="selectExam(1)" class="exam-card bg-white rounded-2xl p-6 shadow-md cursor-pointer transition-all border-l-8 border-blue-500 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-blue-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full">ĐỀ SỐ 1</span>
+                            <i class="fas fa-file-alt text-blue-300 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Đề Ôn Tập Cơ Bản</h3>
+                        <p class="text-sm text-gray-500 mb-4">Phủ hết các dạng toán cơ bản: Giới hạn, Lượng giác, Hình không gian.</p>
+                        <div class="flex items-center text-sm text-gray-500 space-x-4">
+                            <span><i class="fas fa-question-circle mr-1"></i> 22 Câu</span>
+                            <span><i class="fas fa-clock mr-1"></i> 45 Phút</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đề 2 -->
+                <div onclick="selectExam(2)" class="exam-card bg-white rounded-2xl p-6 shadow-md cursor-pointer transition-all border-l-8 border-purple-500 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-purple-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-purple-100 text-purple-700 text-xs font-bold px-3 py-1 rounded-full">ĐỀ SỐ 2</span>
+                            <i class="fas fa-calculator text-purple-300 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Đề Ôn Tập Nâng Cao</h3>
+                        <p class="text-sm text-gray-500 mb-4">Nhiều bài toán thực tế: Thủy triều, Lát gạch, Cược tiền.</p>
+                        <div class="flex items-center text-sm text-gray-500 space-x-4">
+                            <span><i class="fas fa-question-circle mr-1"></i> 22 Câu</span>
+                            <span><i class="fas fa-clock mr-1"></i> 45 Phút</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đề 3 -->
+                <div onclick="selectExam(3)" class="exam-card bg-white rounded-2xl p-6 shadow-md cursor-pointer transition-all border-l-8 border-emerald-500 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full">ĐỀ SỐ 3</span>
+                            <i class="fas fa-chart-line text-emerald-300 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Đề Luyện Tập Tổng Hợp</h3>
+                        <p class="text-sm text-gray-500 mb-4">Tổng hợp các câu hỏi hay và lạ. Rèn luyện tư duy logic.</p>
+                        <div class="flex items-center text-sm text-gray-500 space-x-4">
+                            <span><i class="fas fa-question-circle mr-1"></i> 22 Câu</span>
+                            <span><i class="fas fa-clock mr-1"></i> 45 Phút</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Đề 4 -->
+                <div onclick="selectExam(4)" class="exam-card bg-white rounded-2xl p-6 shadow-md cursor-pointer transition-all border-l-8 border-orange-500 relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 w-32 h-32 bg-orange-50 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
+                    <div class="relative z-10">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-orange-100 text-orange-700 text-xs font-bold px-3 py-1 rounded-full">ĐỀ SỐ 4</span>
+                            <i class="fas fa-medal text-orange-300 text-4xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2">Đề Về Đích</h3>
+                        <p class="text-sm text-gray-500 mb-4">Đề tương tự đề 2 nhưng đảo câu hỏi để rèn phản xạ.</p>
+                        <div class="flex items-center text-sm text-gray-500 space-x-4">
+                            <span><i class="fas fa-question-circle mr-1"></i> 22 Câu</span>
+                            <span><i class="fas fa-clock mr-1"></i> 45 Phút</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Intro Card (Before Start) -->
+        <div id="intro-card" class="hidden-section bg-white rounded-2xl shadow-xl p-8 text-center border-t-4 border-blue-500 max-w-2xl mx-auto mt-8 animate-fade-in">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2" id="selected-exam-title">Đề Số ...</h2>
+            <div class="text-left bg-gray-50 p-6 rounded-xl mb-6 space-y-3">
+                <p class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> <strong>Phần 1:</strong> 12 câu trắc nghiệm (3.0 điểm)</p>
+                <p class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> <strong>Phần 2:</strong> 4 câu đúng sai (4.0 điểm)</p>
+                <p class="flex items-center"><i class="fas fa-check-circle text-green-500 mr-3"></i> <strong>Phần 3:</strong> 6 câu trả lời ngắn (3.0 điểm)</p>
+            </div>
+            
+            <!-- Student Info Form -->
+            <div class="mb-8 text-left space-y-4 border-t pt-4">
+                <h3 class="font-bold text-gray-700"><i class="fas fa-user-edit mr-2"></i>Thông tin học sinh (Bắt buộc)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
+                        <input type="text" id="student-name" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nhập họ tên...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Lớp</label>
+                        <input type="text" id="student-class" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nhập lớp (VD: 11A1)...">
+                    </div>
+                </div>
+                <p id="login-warning" class="text-red-500 text-sm hidden-section"><i class="fas fa-exclamation-circle mr-1"></i> Vui lòng nhập đầy đủ Họ tên và Lớp.</p>
+            </div>
+
+            <div class="flex justify-center space-x-4">
+                <button onclick="location.reload()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-xl transition">
+                    Quay lại
+                </button>
+                <button onclick="startGame()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-xl shadow-lg transform transition hover:scale-105">
+                    Bắt đầu làm bài
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="game-area" class="hidden-section space-y-8 animate-fade-in">
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-xl p-4 shadow-sm sticky top-20 z-40 border border-gray-100">
+                <div class="flex justify-between text-sm font-semibold text-gray-600 mb-2">
+                    <span>Tiến độ làm bài</span>
+                    <span id="progress-text">0/22 câu</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Part 1: Multiple Choice -->
+            <div id="part1-container" class="space-y-6">
+                <div class="flex items-center space-x-2 text-blue-700 font-bold text-xl border-b pb-2">
+                    <span class="bg-blue-100 px-3 py-1 rounded-lg">PHẦN I</span>
+                    <span>Trắc nghiệm (12 câu)</span>
+                </div>
+                <!-- Questions injected here -->
+            </div>
+
+            <!-- Part 2: True/False -->
+            <div id="part2-container" class="space-y-6 hidden-section">
+                <div class="flex items-center space-x-2 text-purple-700 font-bold text-xl border-b pb-2">
+                    <span class="bg-purple-100 px-3 py-1 rounded-lg">PHẦN II</span>
+                    <span>Đúng / Sai (4 câu)</span>
+                </div>
+                <!-- Questions injected here -->
+            </div>
+
+            <!-- Part 3: Short Answer -->
+            <div id="part3-container" class="space-y-6 hidden-section">
+                <div class="flex items-center space-x-2 text-orange-700 font-bold text-xl border-b pb-2">
+                    <span class="bg-orange-100 px-3 py-1 rounded-lg">PHẦN III</span>
+                    <span>Trả lời ngắn (6 câu)</span>
+                </div>
+                <!-- Questions injected here -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-between pt-6 pb-10">
+                <button id="prev-btn" onclick="changeSection(-1)" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg opacity-50 cursor-not-allowed" disabled>
+                    <i class="fas fa-arrow-left mr-2"></i> Phần trước
+                </button>
+                <button id="next-btn" onclick="changeSection(1)" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
+                    Phần tiếp theo <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+                <button id="submit-btn" onclick="submitGame()" class="hidden-section bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform transition hover:scale-105">
+                    Nộp bài thi <i class="fas fa-check ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div id="result-card" class="hidden-section bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl mx-auto my-8 animate-fade-in">
+            <div class="bg-gradient-to-r from-green-500 to-emerald-600 p-8 text-center text-white relative">
+                <div class="absolute top-4 left-4 text-left opacity-80 text-sm">
+                    <p id="result-student-name" class="font-bold">Học sinh: ...</p>
+                    <p id="result-student-class">Lớp: ...</p>
+                </div>
+                <h2 class="text-3xl font-bold mb-2 mt-4">KẾT QUẢ BÀI LÀM</h2>
+                <div class="text-6xl font-extrabold my-4" id="final-score">0.00</div>
+                <p class="text-green-100">Điểm số trên thang 10</p>
+                <div id="submit-status" class="mt-2 h-6 text-sm font-semibold text-white/90"></div>
+            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-blue-50 p-4 rounded-xl text-center border border-blue-100">
+                        <div class="text-blue-600 font-bold text-lg">Phần I</div>
+                        <div class="text-2xl font-bold" id="score-p1">0/3.0</div>
+                    </div>
+                    <div class="bg-purple-50 p-4 rounded-xl text-center border border-purple-100">
+                        <div class="text-purple-600 font-bold text-lg">Phần II</div>
+                        <div class="text-2xl font-bold" id="score-p2">0/4.0</div>
+                    </div>
+                    <div class="bg-orange-50 p-4 rounded-xl text-center border border-orange-100">
+                        <div class="text-orange-600 font-bold text-lg">Phần III</div>
+                        <div class="text-2xl font-bold" id="score-p3">0/3.0</div>
+                    </div>
+                </div>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="location.reload()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition transform hover:scale-105">
+                        <i class="fas fa-home mr-2"></i> Về trang chủ
+                    </button>
+                    <button onclick="showDetailedReview()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition transform hover:scale-105">
+                        <i class="fas fa-list-alt mr-2"></i> Xem chi tiết
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Detailed Review Modal -->
+    <div id="review-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto p-6 relative animate-fade-in shadow-2xl">
+            <button onclick="closeReview()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <h3 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-4">Chi tiết đáp án & Lời giải</h3>
+            <div id="review-content" class="space-y-6"></div>
+        </div>
+    </div>
+
+    <!-- Submit Confirmation Modal -->
+    <div id="submit-confirm-modal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full text-center animate-fade-in">
+            <div class="w-16 h-16 bg-yellow-100 text-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Nộp bài thi?</h3>
+            <p class="text-gray-600 mb-6">Bạn có chắc chắn muốn nộp bài và kết thúc bài thi tại đây không?</p>
+            <div class="flex justify-center space-x-3">
+                <button onclick="closeSubmitConfirm()" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-lg transition">
+                    Chưa
+                </button>
+                <button onclick="confirmSubmission()" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-lg transition">
+                    Nộp ngay
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // --- CONFIGURATION ---
+    // QUAN TRỌNG: Dán link Web App (Exec URL) của bạn vào đây
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7nX5AsyJ4kDWogt_k1ynEHqJxmR-JiKsVrI4ycFwLGwLmWR6cEoqA3R9-rcF9zVjpsg/exec"; 
+
+    // --- TABLE TEMPLATES ---
+    const tables = {
+        gymTime: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Thời gian (phút)</th><td>[0;10)</td><td>[10;20)</td><td>[20;30)</td><td>[30;40)</td><td>[40;50)</td><td>[50;60)</td></tr><tr><th>Số học sinh</th><td>7</td><td>13</td><td>9</td><td>18</td><td>22</td><td>6</td></tr></table></div>`,
+        housePrice: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Mức giá (tr/m²)</th><td>[10;14)</td><td>[14;18)</td><td>[18;22)</td><td>[22;26)</td><td>[26;30)</td></tr><tr><th>Số khách</th><td>47</td><td>78</td><td>120</td><td>45</td><td>10</td></tr></table></div>`,
+        supplies: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Giá trị (nghìn)</th><td>[10;15)</td><td>[15;20)</td><td>[20;25)</td><td>[25;30)</td><td>[30;35)</td><td>[35;40)</td></tr><tr><th>Tần số</th><td>2</td><td>5</td><td>15</td><td>8</td><td>9</td><td>1</td></tr></table></div>`,
+        phonePrice: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Mức giá (triệu)</th><td>[4;8)</td><td>[8;12)</td><td>[12;16)</td><td>[16;20)</td><td>[20;24)</td></tr><tr><th>Số khách</th><td>36</td><td>62</td><td>60</td><td>18</td><td>12</td></tr></table></div>`,
+        homework: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Thời gian (phút)</th><td>[0;4)</td><td>[4;8)</td><td>[8;12)</td><td>[12;16)</td><td>[16;20)</td></tr><tr><th>Số học sinh</th><td>2</td><td>4</td><td>7</td><td>4</td><td>3</td></tr></table></div>`,
+        // Dữ liệu mới cho Đề 4
+        selfStudyTime: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Thời gian (phút)</th><td>[0;20)</td><td>[20;40)</td><td>[40;60)</td></tr><tr><th>Số học sinh</th><td>5</td><td>15</td><td>10</td></tr></table></div>`,
+        revenue: `<div class="overflow-x-auto"><table class="stats-table"><tr><th>Doanh thu (tỷ đồng)</th><td>[10;15)</td><td>[15;20)</td><td>[20;25)</td><td>[25;30)</td><td>[30;35)</td></tr><tr><th>Số doanh nghiệp</th><td>5</td><td>12</td><td>20</td><td>10</td><td>3</td></tr></table></div>`
+    };
+
+    // --- DATABASE ---
+    const allExams = {
+        1: {
+            part1: [
+                { id: "e1p1q1", question: "Tính giới hạn \\(\\lim_{n\\rightarrow+\\infty}\\frac{8n^{2}+3n-1}{4+5n+2n^{2}}\\)", options: ["2", "4", "0", "\\(+\\infty\\)"], correct: 1, explanation: "Hệ số bậc cao nhất tử là 8, mẫu là 2. Kết quả 8/2 = 4." },
+                { id: "e1p1q2", question: "Tập nghiệm của phương trình \\(2\\cos x+1=0\\) là:", options: ["\\(\\{\\pm\\frac{\\pi}{3}+k\\pi\\}\\)", "\\(\\{\\pm\\frac{2}{3}\\pi+k\\pi\\}\\)", "\\(\\{\\pm\\frac{\\pi}{3}+k2\\pi\\}\\)", "\\(\\{\\pm\\frac{2}{3}\\pi+k2\\pi\\}\\)"], correct: 3, explanation: "\\(\\cos x = -1/2\\) tại góc \\(\\pm 2\\pi/3\\)." },
+                { id: "e1p1q3", question: "Trong các dãy số sau đây, dãy số nào là cấp số cộng?", options: ["1; -3; -6; -9; -12", "1; -3; -7; -11; -15", "1; -3; -5; -7; -9", "1; -2; -4; -6; -8"], correct: 1, explanation: "Dãy B có công sai \\(d=-4\\) không đổi." },
+                { id: "e1p1q4", question: "Khảo sát thời gian tập thể dục trong ngày của một số học sinh khối 11 thu được mẫu số liệu ghép nhóm sau:<br>" + tables.gymTime + "Mốt của mẫu số liệu thuộc nhóm nào?", options: ["\\([30;40)\\)", "\\([10;20)\\)", "\\([20;30)\\)", "\\([40;50)\\)"], correct: 3, explanation: "Nhóm [40;50) có tần số lớn nhất là 22." },
+                { id: "e1p1q5", question: "Trong các khẳng định sau, khẳng định nào SAI?", options: ["\\(\\sin(\\pi-\\alpha)=\\sin\\alpha\\)", "\\(\\sin(\\pi+\\alpha)=-\\sin\\alpha\\)", "\\(\\cos(\\pi-\\alpha)=\\cos\\alpha\\)", "\\(\\cos(\\pi+\\alpha)=-\\cos\\alpha\\)"], correct: 2, explanation: "\\(\\cos(\\pi-\\alpha)\\) phải bằng \\(-\\cos\\alpha\\)." },
+                { id: "e1p1q6", question: "Tìm \\(\\lim_{x\\rightarrow1}\\frac{8x}{x+3}\\)", options: ["\\(+\\infty\\)", "-8", "2", "0"], correct: 2, explanation: "Thay x=1: 8/4 = 2." },
+                { id: "e1p1q7", question: "Cho cấp số nhân \\((u_n)\\), số hạng đầu \\(u_1=3\\), công bội \\(q=2\\). Số hạng thứ 5 là:", options: ["11", "6", "32", "48"], correct: 3, explanation: "\\(u_5 = 3 \\cdot 2^4 = 48\\)." },
+                { id: "e1p1q8", question: "Tập xác định của hàm số \\(y=\\tan(x+30^{\\circ})\\)", options: ["\\(R\\backslash\\{60^{\\circ}+k180^{\\circ}\\}\\)", "\\(R\\backslash\\{30^{\\circ}+k180^{\\circ}\\}\\)", "\\(R\\backslash\\{60^{\\circ}+k360^{\\circ}\\}\\)", "\\(R\\backslash\\{30^{\\circ}+k360^{\\circ}\\}\\)"], correct: 0, explanation: "\\(x+30 \\ne 90 + k180 \\Rightarrow x \\ne 60 + k180\\)." },
+                { id: "e1p1q9", question: "Cho hàm số \\(f(x)=\\begin{cases} \\frac{x^2+x-2}{x+2} & \\text{khi } x \\ne -2 \\\\ m+8 & \\text{khi } x=-2 \\end{cases}\\). Tìm m để hàm số liên tục tại \\(x = -2\\)", options: ["-11", "3", "0", "-3"], correct: 0, explanation: "Lim = -3. \\(m+8=-3 \\Rightarrow m=-11\\)." },
+                { id: "e1p1q10", question: "Đổi số đo của góc \\(\\alpha=90^{\\circ}\\) sang đơn vị radian ta được", options: ["\\(2\\pi/3\\)", "\\(\\pi/6\\)", "\\(\\pi/2\\)", "\\(\\pi/3\\)"], correct: 2, explanation: "90 độ = pi/2." },
+                { id: "e1p1q11", question: "Cho hai đường thẳng phân biệt a và b trong không gian. Có bao nhiêu vị trí tương đối giữa a và b?", options: ["4", "2", "3", "1"], correct: 2, explanation: "Cắt, Song song, Chéo nhau." },
+                { id: "e1p1q12", question: "Cho tứ diện ABCD, I, J, K là trung điểm AC, BC, BD. Giao tuyến của (ABD) và (IJK) là:", options: ["Đường thẳng qua K song song AB", "Đường thẳng qua I song song AD", "Đường thẳng qua J song song AC", "Đường thẳng qua J song song CD"], correct: 0, explanation: "\\(IJ // AB\\), giao tuyến qua K và song song AB." }
+            ],
+            part2: [
+                { id: "e1p2q1", question: "Cho phương trình \\(\\sin(3x+\\frac{\\pi}{4})=\\sin(2x-\\frac{3\\pi}{4})\\).", items: [{text: "Phương trình có nghiệm \\(x=-\\pi+k2\\pi\\) và \\(x=\\frac{3\\pi}{10}+\\frac{k2\\pi}{5}\\)", isTrue: true}, {text: "Trong khoảng \\((0;2\\pi)\\) phương trình có 2 nghiệm.", isTrue: false}, {text: "Trong khoảng \\((0;2\\pi)\\) phương trình có nghiệm lớn nhất \\(\\frac{3\\pi}{10}\\).", isTrue: false}, {text: "Tổng các nghiệm trong khoảng \\((0;2\\pi)\\) bằng \\(\\pi\\).", isTrue: false}], explanation: "Có 5 nghiệm trong khoảng thứ 2. Tổng nghiệm khác Pi." },
+                { id: "e1p2q2", question: "Cho hình chóp S.ABCD có đáy ABCD là hình bình hành tâm O. Gọi M, N lần lượt là trung điểm các cạnh CD và SA.", items: [{text: "Nếu NP là giao tuyến của (OMN) và (SAB), \\(P\\in AB\\) thì NP cắt SB.", isTrue: false}, {text: "(OMN) || (SBC).", isTrue: true}, {text: "Mặt phẳng (OMN) cắt AB tại trung điểm của nó.", isTrue: true}, {text: "MN cắt mp(SAD).", isTrue: true}], explanation: "NP // SB (đường trung bình)." },
+                { id: "e1p2q3", question: "Cho cấp số nhân \\((u_n)\\) với \\(u_1=2, u_2=6\\). Khi đó:", items: [{text: "Công bội \\(q=3\\)", isTrue: true}, {text: "Số hạng \\(u_5=2.3^5\\)", isTrue: false}, {text: "4374 là số hạng thứ 9", isTrue: false}, {text: "Tổng 50 số hạng đầu của cấp số nhân là \\(S_{50}=3^{50}-1\\)", isTrue: true}], explanation: "\\(u_5 = 2.3^4\\). 4374 là số thứ 8." },
+                { id: "e1p2q4", question: "Một công ty xây dựng khảo sát nhu cầu giá thành khi mua nhà ở thành phố của khách hàng. Kết quả khảo sát được ghi lại như bảng sau:<br>" + tables.housePrice + "Các mệnh đề sau đúng hay sai?", items: [{text: "Khoảng biến thiên của mẫu số liệu trên bằng 21.", isTrue: false}, {text: "Trung vị của mẫu số liệu ghép nhóm thuộc nhóm [18;22)", isTrue: true}, {text: "Khi làm tròn đến hàng phần trăm, mốt của mẫu số liệu là \\(M_o \\approx 19,47\\)", isTrue: false}, {text: "Khi làm tròn đến hàng phần trăm, phương sai của mẫu số liệu trên là 16,87.", isTrue: false}], explanation: "Mốt xấp xỉ 19.44." }
+            ],
+            part3: [
+                { id: "e1p3q1", question: "Một công viên giải trí vừa khánh thành trò chơi Vòng quay tốc độ. Giả sử tại thời điểm t, buồng A trên vòng quay cách mặt đất một độ cao được cho bởi công thức \\(p(t)=20+10\\sin(\\frac{\\pi(t-1)}{5})\\). Trong 10 giây đầu tiên, tại thời điểm giây bao nhiêu thì độ cao của buồng A đạt 30 mét?", keywords: ["3.5", "3,5"], explanation: "Giải \\(\\sin=1\\) ra t=3.5." },
+                { id: "e1p3q2", question: "Một đội công nhân dùng gạch cỡ 100x100cm để lát nền cho một toà tháp gồm 6 tầng theo cấu trúc diện tích mặt sàn của tầng trên bằng 80% diện tích mặt sàn của tầng dưới. Biết diện tích mặt đáy của tháp là 65 \\(m^2\\). Hỏi đội công nhân dự định dùng tối thiểu khoảng bao nhiêu viên gạch?", keywords: ["240"], explanation: "Tổng diện tích khoảng 239.8m2." },
+                { id: "e1p3q3", question: "Cho hình chóp S.ABCD có đáy ABCD là hình thang cân với cạnh bên \\(BC=2\\), hai đáy \\(AB=6\\), \\(CD=4\\). Mặt phẳng (P) song song với (ABCD) và cắt cạnh SA tại M sao cho \\(SA=3SM\\). Diện tích thiết diện của (P) và hình chóp S.ABCD bằng bao nhiêu? (kết quả làm tròn đến chữ số thập phân thứ hai)", keywords: ["0.96", "0,96"], explanation: "\\(S = (1/3)^2 \\times 5\\sqrt{3}\\)." },
+                { id: "e1p3q4", question: "Chi phí (đơn vị: triệu đồng) để sản xuất x sản phẩm của một công ty được xác định bởi hàm số \\(C(x)=2x+55\\). Chi phí trung bình để sản xuất một sản phẩm càng gần với số tiền nào dưới đây (đơn vị triệu đồng) khi x càng lớn?", keywords: ["2"], explanation: "Giới hạn của \\(2 + 55/x\\) là 2." },
+                { id: "e1p3q5", question: "Tìm \\(\\lim_{x\\rightarrow2}\\frac{4-x^{2}}{\\sqrt{x+7}-3}\\)", keywords: ["-24"], explanation: "Nhân liên hợp và rút gọn." },
+                { id: "e1p3q6", question: "Người ta trồng cây theo hình tam giác, với quy luật: ở hàng thứ nhất có 1 cây, ở hàng thứ hai có 2 cây, ... hàng thứ n có n cây. Biết trồng hết 4950 cây. Hỏi số hàng cây là bao nhiêu?", keywords: ["99"], explanation: "Tổng n số tự nhiên bằng 4950." }
+            ]
+        },
+        2: {
+            part1: [
+                { id: "e2p1q1", question: "Đổi số đo của góc \\(\\alpha=60^{\\circ}\\) sang đơn vị radian ta được", options: ["\\(2\\pi/3\\)", "\\(\\pi/6\\)", "\\(\\pi/2\\)", "\\(\\pi/3\\)"], correct: 3, explanation: "60 độ = pi/3" },
+                { id: "e2p1q2", question: "Cho hai đường thẳng phân biệt a và b trong không gian. Có bao nhiêu vị trí tương đối giữa a và b?", options: ["4", "2", "3", "1"], correct: 2, explanation: "" },
+                { id: "e2p1q3", question: "Trong các dãy số sau đây, dãy số nào là cấp số cộng?", options: ["1; -3; -6; -9; -12", "1; 3; 7; 11; 15", "1; -3; -5; -7; -9", "1; -2; -5; -8; -11"], correct: 3, explanation: "Dãy D có công sai -3." },
+                { id: "e2p1q4", question: "Khảo sát thời gian tập thể dục trong ngày của một số học sinh khối 11 thu được mẫu số liệu ghép nhóm sau:<br>" + tables.gymTime + "Trung vị của mẫu số liệu thuộc nhóm nào?", options: ["\\([30;40)\\)", "\\([10;20)\\)", "\\([20;30)\\)", "\\([40;50)\\)"], correct: 0, explanation: "Vị trí 38 (N=75) nằm trong nhóm [30;40)." },
+                { id: "e2p1q5", question: "Cho hai góc \\(\\alpha; \\beta\\) thỏa mãn \\(\\alpha+\\beta=\\frac{\\pi}{2}\\). Hỏi khẳng định nào sau đây đúng?", options: ["\\(\\sin\\alpha=\\sin\\beta\\)", "\\(\\sin\\alpha=\\cos\\beta\\)", "\\(\\sin\\alpha=-\\cos\\beta\\)", "\\(\\sin\\alpha=-\\sin\\beta\\)"], correct: 1, explanation: "Phụ chéo." },
+                { id: "e2p1q6", question: "Tìm \\(\\lim_{x\\rightarrow2}\\frac{10x}{x+3}\\)", options: ["\\(+\\infty\\)", "-8", "2", "4"], correct: 3, explanation: "20/5 = 4." },
+                { id: "e2p1q7", question: "Cho cấp số nhân \\((u_n)\\), số hạng đầu \\(u_1=5\\) công bội \\(q=2\\) Số hạng thứ 5 của cấp số nhân đó là", options: ["13", "80", "32", "160"], correct: 1, explanation: "5 * 16 = 80." },
+                { id: "e2p1q8", question: "Tập xác định của hàm số \\(y=\\cot(x+30^{\\circ})\\)", options: ["\\(R\\backslash\\{60^{0}+k180^{o}\\}\\)", "\\(R\\backslash\\{-30^{0}+k180^{o}\\}\\)", "\\(R\\backslash\\{-30^{0}+k360^{o}\\}\\)", "\\(R\\backslash\\{60^{0}+k360^{o}\\}\\)"], correct: 1, explanation: "Sin khác 0 => x khác -30." },
+                { id: "e2p1q9", question: "Cho hàm số \\(f(x)=\\begin{cases} \\frac{x^2+x-2}{x+2} & \\text{khi } x \\ne -2 \\\\ m+1 & \\text{khi } x=-2 \\end{cases}\\). Hàm số liên tục tại \\(x=-2\\) khi", options: ["3", "-4", "0", "-3"], correct: 1, explanation: "m+1=-3 => m=-4." },
+                { id: "e2p1q10", question: "Tính \\(\\lim_{n\\rightarrow+\\infty}\\frac{9n^{3}+3n-1}{4-3n^{3}-2n^{2}}\\)", options: ["3", "-3", "-9/4", "-8"], correct: 1, explanation: "Hệ số cao nhất: 9 chia -3 = -3." },
+                { id: "e2p1q11", question: "Tập nghiệm của phương trình \\(2\\cos x-1=0\\) là", options: ["\\(\\{\\pm\\frac{\\pi}{3}+k2\\pi\\}\\)", "\\(\\{\\pm\\frac{\\pi}{6}+k2\\pi\\}\\)", "\\(\\{\\pm\\frac{2}{3}\\pi+k\\pi\\}\\)", "\\(\\{\\pm\\frac{2}{3}\\pi+k2\\pi\\}\\)"], correct: 0, explanation: "Cos = 1/2." },
+                { id: "e2p1q12", question: "Cho tứ diện ABCD, I, J, K lần lượt là trung điểm của AC, BC, BD. Giao tuyến của hai mặt phẳng (ACD) và (IJK) là", options: ["đường thẳng qua K song song với AB", "đường thẳng qua I song song với CD", "đường thẳng qua J song song với AC", "đường thẳng qua J song song với CD"], correct: 1, explanation: "Giao tuyến với (ACD) qua điểm chung I song song CD." }
+            ],
+            part2: [
+                { id: "e2p2q1", question: "Cho phương trình \\(\\sin(2x-\\frac{\\pi}{4})=\\sin(x+\\frac{3\\pi}{4})(*)\\), vậy:", items: [{text: "Phương trình có nghiệm \\(\\begin{cases}x=\\pi+k2\\pi\\\\ x=\\frac{\\pi}{6}+k\\frac{2\\pi}{3}\\end{cases}(k\\in\\mathbb{Z}).\\)", isTrue: true}, {text: "Trong khoảng (0;2\\(\\pi\\)) phương trình có 3 nghiệm", isTrue: false}, {text: "Tổng các nghiệm của phương trình trong khoảng (0;2\\(\\pi\\)) bằng \\(\\frac{\\pi}{6}\\)", isTrue: false}, {text: "Trong khoảng (0;2\\(\\pi\\)) phương trình có nghiệm nhỏ nhất bằng \\(\\frac{7\\pi}{6}\\)", isTrue: false}], explanation: "Trong (0;2pi) có 4 nghiệm. Tổng nghiệm 3.5pi. Nghiệm nhỏ nhất pi/6." },
+                { id: "e2p2q2", question: "Cho hình chóp S.ABCD có đáy ABCD là hình bình hành tâm O. Gọi M, N lần lượt là trung điểm các cạnh SA và SB.", items: [{text: "Giao điểm của đường thẳng SO và mặt phẳng (MNC) là trọng tâm của tam giác SAC.", isTrue: true}, {text: "Đường thẳng MN cắt đường thẳng CD.", isTrue: false}, {text: "Đường thẳng BC song song với mặt phẳng (SAD).", isTrue: true}, {text: "Gọi P là trung điểm của SD. Mặt phẳng (MNP) song song với mặt phẳng (ABCD).", isTrue: true}], explanation: "a) Đúng: MC là trung tuyến tam giác SAC, SO là trung tuyến. Giao tại trọng tâm. b) Sai: MN // AB // CD. c) Đúng: BC // AD. d) Đúng: MN // AB, MP // AD." },
+                { id: "e2p2q3", question: "Cho cấp số nhân \\((u_n)\\) với công bội q và \\(u_1=3, u_2=6\\). Khi đó:", items: [{text: "Công bội \\(q=2\\)", isTrue: true}, {text: "Số hạng \\(u_5=\\frac{1}{27}\\)", isTrue: false}, {text: "4374 là số hạng thứ 8", isTrue: false}, {text: "Tổng 50 số hạng đầu của cấp số nhân là \\(S_{50}=3(2^{50}-1)\\)", isTrue: true}], explanation: "q=2. u5=48. 4374 không thuộc dãy. Tổng 3*(2^50 - 1)." },
+                { id: "e2p2q4", question: "Điều tra về số tiền mua đồ dùng học tập trong một tháng của 40 học sinh:<br>" + tables.supplies, items: [{text: "Khoảng biến thiên của mẫu số liệu trên bằng 30.", isTrue: true}, {text: "Số trung bình của mẫu số liệu là 25", isTrue: true}, {text: "Mốt của mẫu số liệu là \\(M_o\\approx 19,49\\)", isTrue: false}, {text: "Phương sai của mẫu số liệu trên là 35,5.", isTrue: false}], explanation: "Biến thiên 30. Trung bình 25. Mốt ~22.94. Phương sai = 35 (Mệnh đề nói 35,5 là Sai)." }
+            ],
+            part3: [
+                { id: "e2p3q1", question: "Mực nước của một con sông hàng ngày lên xuống theo thủy triều. Độ sâu h(m) được tính theo công thức \\(h=-4\\sin(\\frac{\\pi t}{6}+\\frac{\\pi}{3})+5\\). Tính độ sâu của mực nước con sông tại thời điểm 6 giờ sáng. (Kết quả làm tròn đến hai chữ số thập phân)", keywords: ["8.46", "8,46"], explanation: "Thay t=6: \\(h = -4\\sin(\\pi + \\pi/3) + 5 = 5 + 2\\sqrt{3} \\approx 8.46\\)." },
+                { id: "e2p3q2", question: "Một cửa hàng bán điện thoại khảo sát một số khách hàng xem họ dự định mua điện thoại với mức giá nào. Kết quả ghi lại ở bảng sau:<br>" + tables.phonePrice + "Mức giá trung bình của các khách hàng này dự định mua điện thoại là bao nhiêu triệu đồng? (Kết quả làm tròn đến hai chữ số thập phân)", keywords: ["12.04", "12,04"], explanation: "Tính trung bình cộng các khoảng giá nhân tần số: 2264 / 188 = 12.04." },
+                { id: "e2p3q3", question: "Một người vào trường đua ngựa đặt cược theo nguyên tắc: Lần đầu đặt 3 USD, mỗi lần thua thì đặt gấp đôi số tiền đặt cược của lần ngay trước đó, nếu thắng thì dừng lại. Người đó thua 13 lần liên tiếp và thắng ở lần thứ 14. Hỏi sau lần thắng đó người này lãi bao nhiêu USD?", keywords: ["3"], explanation: "Theo nguyên tắc Martingale, khi thắng ở bất kỳ bước nào, số tiền lãi thu về luôn bằng đúng số tiền cược ban đầu (u1 = 3)." },
+                { id: "e2p3q4", question: "Cho hình chóp S.ABCD có đáy ABCD là hình bình hành có diện tích \\(100 cm^2\\). Gọi M là điểm thuộc cạnh SA sao cho \\(MA=2SM\\). Mặt phẳng (P) đi qua M và song song với mặt phẳng đáy (ABCD). Diện tích thiết diện của hình chóp cắt bởi mặt phẳng (P) được viết dưới dạng phân số tối giản \\(\\frac{a}{b}\\). Tính giá trị của biểu thức \\(K = a + b + 1\\).", keywords: ["110"], explanation: "Tỉ số đồng dạng \\(k = SM/SA = 1/3\\). Diện tích thiết diện \\(S = k^2 \\times S_{day} = 100/9\\). Vậy \\(a=100, b=9\\). \\(K = 100+9+1=110\\)." },
+                { id: "e2p3q5", question: "Tìm \\(\\lim_{x\\rightarrow2}\\frac{4-x^{2}}{\\sqrt{x+7}-3}\\)", keywords: ["-24"], explanation: "Nhân liên hợp và rút gọn: \\(\\lim -(x+2)(\\sqrt{x+7}+3) = -4 \\times 6 = -24\\)." },
+                { id: "e2p3q6", question: "Người ta trồng 4950 cây theo dạng hình tam giác như sau: hàng thứ nhất trồng 1 cây, hàng thứ hai trồng 2 cây, hàng thứ ba trồng 3 cây,..., cứ như thế hàng sau trồng nhiều hơn hàng trước 1 cây. Hỏi có tất cả bao nhiêu hàng cây?", keywords: ["99"], explanation: "Tổng n số tự nhiên: \\(n(n+1)/2 = 4950 \\Rightarrow n=99\\)." }
+            ]
+        },
+        3: {
+            part1: [
+                { id: "e3p1q1", question: "Tìm \\(\\lim_{x\\rightarrow1}\\frac{8x}{x+3}\\)", options: ["2", "-8", "\\(+\\infty\\)", "0"], correct: 0, explanation: "" },
+                { id: "e3p1q2", question: "Cho cấp số nhân \\((u_n)\\), số hạng đầu \\(u_1=3\\) công bội \\(q=2\\) Số hạng thứ 5", options: ["11", "6", "32", "48"], correct: 3, explanation: "" },
+                { id: "e3p1q3", question: "Tập nghiệm của phương trình \\(2\\cos x+1=0\\) là", options: ["\\(\\{\\pm\\frac{\\pi}{3}+k2\\pi\\}\\)", "\\(\\{\\pm\\frac{\\pi}{3}+k\\pi\\}\\)", "\\(\\{\\pm\\frac{2}{3}\\pi+k\\pi\\}\\)", "\\(\\{\\pm\\frac{2}{3}\\pi+k2\\pi\\}\\)"], correct: 3, explanation: "" },
+                { id: "e3p1q4", question: "Cho tứ diện ABCD, gọi I, J, K lần lượt là trung điểm của AC, BC, BD. Giao tuyến của hai mặt phẳng (ABD) và (IJK) là", options: ["đường thẳng qua K song song với AB", "đường thẳng qua I song song với CD", "đường thẳng qua J song song với AC", "đường thẳng qua J song song với CD"], correct: 0, explanation: "" },
+                { id: "e3p1q5", question: "Tập xác định của hàm số \\(y=\\tan(x+30^{\\circ})\\)", options: ["\\(R\\backslash\\{60^{\\circ}+k180^{\\circ}\\}\\)", "\\(R\\backslash\\{30^{\\circ}+k180^{\\circ}\\}\\)", "\\(R\\backslash\\{30^{\\circ}+k360^{\\circ}\\}\\)", "\\(R\\backslash\\{60^{\\circ}+k360^{\\circ}\\}\\)"], correct: 0, explanation: "" },
+                { id: "e3p1q6", question: "Đổi số đo của góc \\(\\alpha=90^{\\circ}\\) sang đơn vị radian ta được", options: ["\\(2\\pi/3\\)", "\\(\\pi/6\\)", "\\(\\pi/2\\)", "\\(\\pi/3\\)"], correct: 2, explanation: "" },
+                { id: "e3p1q7", question: "Cho hai đường thẳng phân biệt a và b trong không gian. Có bao nhiêu vị trí tương đối giữa a và b?", options: ["4", "3", "2", "1"], correct: 1, explanation: "" },
+                { id: "e3p1q8", question: "Trong các khẳng định sau, khẳng định nào sai?", options: ["\\(\\sin(\\pi-\\alpha)=\\sin\\alpha\\)", "\\(\\sin(\\pi+\\alpha)=-\\sin\\alpha\\)", "\\(\\cos(\\pi-\\alpha)=\\cos\\alpha\\)", "\\(\\cos(\\pi+\\alpha)=-\\cos\\alpha\\)"], correct: 2, explanation: "Cos đối sai (cos(pi-a)=-cos a)." },
+                { id: "e3p1q9", question: "Trong các dãy số sau đây, dãy số nào là cấp số cộng?", options: ["1; -3; -6; -9; -12", "1; -3; -7; -11; -15", "1; -3; -5; -7; -9", "1; -2; -4; -6; -8"], correct: 1, explanation: "Đáp án B có công sai -4." },
+                { id: "e3p1q10", question: "Tính \\(\\lim_{n\\rightarrow+\\infty}\\frac{8n^{2}+3n-1}{4+5n+2n^{2}}\\)", options: ["2", "4", "-1/2", "-4"], correct: 1, explanation: "" },
+                { id: "e3p1q11", question: "Cho hàm số \\(f(x)=\\begin{cases} \\frac{x^2+x-2}{x+2} & \\text{khi } x \\ne -2 \\\\ m-2 & \\text{khi } x=-2 \\end{cases}\\). Hàm số liên tục tại \\(x=-2\\) khi:", options: ["-1", "-10", "0", "3"], correct: 0, explanation: "Lim = -3. \\(m-2=-3 \\Rightarrow m=-1\\)." },
+                { id: "e3p1q12", question: "Khảo sát thời gian tập thể dục trong ngày của một số học sinh khối 11 thu được mẫu số liệu ghép nhóm sau:<br>" + tables.gymTime + "Mốt của mẫu số liệu thuộc nhóm nào?", options: ["\\([30;40)\\)", "\\([10;20)\\)", "\\([20;30)\\)", "\\([40;50)\\)"], correct: 3, explanation: "Nhóm 40:50 có tần số cao nhất." }
+            ],
+            part2: [
+                { id: "e3p2q1", question: "Cho phương trình \\(\\sin(3x+\\frac{\\pi}{4})=\\sin(2x-\\frac{3\\pi}{4})\\).", items: [{text: "Phương trình có nghiệm \\(x=-\\pi+k2\\pi\\) và \\(x=\\frac{3\\pi}{10}+\\frac{k2\\pi}{5}\\) \\((k \\in \\mathbb{Z})\\).", isTrue: true}, {text: "Trong khoảng \\((0;2\\pi)\\) phương trình có 2 nghiệm.", isTrue: false}, {text: "Trong khoảng \\((0;2\\pi)\\) phương trình có nghiệm lớn nhất \\(\\frac{3\\pi}{10}\\).", isTrue: false}, {text: "Tổng các nghiệm trong khoảng \\((0;2\\pi)\\) bằng \\(\\pi\\).", isTrue: false}], explanation: "" },
+                { id: "e3p2q2", question: "Cho hình chóp S.ABCD có đáy ABCD là hình bình hành tâm O. Gọi M, N lần lượt là trung điểm các cạnh CD và SA.", items: [{text: "Nếu NP là giao tuyến của (OMN) và (SAB), \\(P\\in AB\\) thì NP cắt SB.", isTrue: false}, {text: "(OMN) || (SBC).", isTrue: true}, {text: "Mặt phẳng (OMN) cắt AB tại trung điểm của nó.", isTrue: true}, {text: "MN cắt mp(SAD).", isTrue: true}], explanation: "" },
+                { id: "e3p2q3", question: "Cho cấp số nhân \\((u_n)\\) với \\(u_1=2, u_2=6\\). Khi đó:", items: [{text: "Công bội \\(q=3\\)", isTrue: true}, {text: "Số hạng \\(u_5=\\frac{2}{81}\\)", isTrue: false}, {text: "4374 là số hạng thứ 9", isTrue: false}, {text: "Tổng 50 số hạng đầu của cấp số nhân là \\(S_{50}=3^{50}-1\\)", isTrue: true}], explanation: "" },
+                { id: "e3p2q4", question: "Một công ty xây dựng khảo sát nhu cầu giá thành khi mua nhà ở thành phố của khách hàng. Kết quả khảo sát được ghi lại như bảng sau:<br>" + tables.housePrice + "Các mệnh đề sau đúng hay sai?", items: [{text: "Khoảng biến thiên của mẫu số liệu trên bằng 21.", isTrue: false}, {text: "Trung vị của mẫu số liệu ghép nhóm thuộc nhóm [18;22)", isTrue: true}, {text: "Khi làm tròn đến hàng phần trăm, mốt của mẫu số liệu là \\(M_o \\approx 19,47\\)", isTrue: false}, {text: "Khi làm tròn đến hàng phần trăm, phương sai của mẫu số liệu trên là 16,87.", isTrue: false}], explanation: "Mốt xấp xỉ 19.44." }
+            ],
+            part3: [
+                { id: "e3p3q1", question: "Một vòng quay trò chơi có bán kính 57 m, trục quay cách mặt đất 57,5 m. Giả sử vòng quay quay đều, khi đó khoảng cách \\(h(m)\\) từ một cabin đến mặt đất được tính bởi công thức \\(h(t) = 57,5 + 57\\sin(\\frac{\\pi t}{15})\\) với t là thời gian quay tính bằng giây. Gọi M và m lần lượt là khoảng cách lớn nhất và nhỏ nhất từ cabin đến mặt đất. Tính giá trị M - m.", keywords: ["114"], explanation: "Max = 57.5 + 57; Min = 57.5 - 57. Hiệu = 114." },
+                { id: "e3p3q2", question: "Tìm hiểu thời gian hoàn thành một bài tập của một số học sinh thu được kết quả sau:<br>" + tables.homework + "Tính tứ phân vị thứ ba của mẫu số liệu ghép nhóm này.", keywords: ["14"], explanation: "Tính toán Q3 trên nhóm [12;16)." },
+                { id: "e3p3q3", question: "Biết \\(\\lim_{n \\to +\\infty} \\frac{2025n - 3}{2026n + 1} = \\frac{a}{b}\\) với \\(\\frac{a}{b}\\) là phân số tối giản. Tính giá trị của biểu thức \\(a - b\\).", keywords: ["-1"], explanation: "Kết quả giới hạn là 2025/2026. a-b = 2025-2026 = -1." },
+                { id: "e3p3q4", question: "Một tam giác có ba cạnh lập thành một cấp số nhân, biết cạnh lớn nhất là 18 và chu vi tam giác là 38. Tính độ dài đường trung tuyến ứng với cạnh có số đo lớn nhất. (Làm tròn đến hàng phần mười)", keywords: ["4.8", "4,8"], explanation: "Ba cạnh là 8, 12, 18. Trung tuyến mc = 4.8." },
+                { id: "e3p3q5", question: "Biết \\(\\lim_{n \\to +\\infty} \\frac{\\sqrt{n^2+4n}-n}{1} = a\\). Giá trị của a là bao nhiêu?", keywords: ["2"], explanation: "Nhân liên hợp, kết quả là 2." },
+                { id: "e3p3q6", question: "Cho hình chóp S.ABCD có đáy ABCD là hình bình hành. Gọi G là trọng tâm tam giác SAB, I là trung điểm của AB và M là điểm trên cạnh AD. Biết rằng đường thẳng MG song song với mặt phẳng (SCD). Tỉ số giữa hai đoạn thẳng AM và AD là bao nhiêu? (Làm tròn đến hàng phần trăm).", keywords: ["0.33", "0,33"], explanation: "Gọi K là giao điểm của IM và CD. Giao tuyến của (SMI) và (SCD) là SK. Để MG // (SCD) thì MG // SK. Trong tam giác SIK, ta có IG/IS = 1/3 nên IM/IK = 1/3. Suy ra IM/MK = 1/2. Theo Talet: AM/MD = IM/MK = 1/2. Vậy AM/AD = 1/3 ≈ 0.33." }
+            ]
+        },
+        4: {
+            part1: [
+                { id: "e4p1q1", question: "Tính \\(\\lim_{n\\rightarrow+\\infty}\\frac{6n^{2}-1}{3n^{2}+2}\\)", options: ["2", "3", "0", "\\(+\\infty\\)"], correct: 0, explanation: "Hệ số bậc cao nhất tử là 6, mẫu là 3. Kết quả 6/3 = 2." },
+                { id: "e4p1q2", question: "Tập nghiệm của phương trình \\(2\\cos x - \\sqrt{3}=0\\) là:", options: ["\\(\\{\\pm\\frac{\\pi}{6}+k2\\pi\\}\\)", "\\(\\{\\pm\\frac{\\pi}{3}+k2\\pi\\}\\)", "\\(\\{\\pm\\frac{\\pi}{6}+k\\pi\\}\\)", "\\(\\{\\pm\\frac{5\\pi}{6}+k2\\pi\\}\\)"], correct: 0, explanation: "\\(\\cos x = \\sqrt{3}/2 \\Rightarrow x = \\pm \\pi/6 + k2\\pi\\)." },
+                { id: "e4p1q3", question: "Trong các dãy số sau, dãy nào là cấp số cộng?", options: ["2; 5; 8; 11", "2; 4; 8; 16", "1; -1; 1; -1", "3; 1; -1; -4"], correct: 0, explanation: "Dãy A có công sai d = 3 không đổi." },
+                { id: "e4p1q4", question: "Khảo sát thời gian tự học (phút) của 30 học sinh thu được bảng số liệu sau:<br>" + tables.selfStudyTime + "Nhóm chứa trung vị là:", options: ["\\([20;40)\\)", "\\([0;20)\\)", "\\([40;60)\\)", "\\([10;30)\\)"], correct: 0, explanation: "N=30, trung vị ở vị trí 15, 16. Tần số tích lũy nhóm 1 là 5, nhóm 2 là 5+15=20. Vậy Me thuộc [20;40)." },
+                { id: "e4p1q5", question: "Khẳng định nào sau đây SAI?", options: ["\\(\\cos(\\pi+\\alpha)=\\cos\\alpha\\)", "\\(\\sin(\\pi-\\alpha)=\\sin\\alpha\\)", "\\(\\tan(\\pi+\\alpha)=\\tan\\alpha\\)", "\\(\\cot(\\frac{\\pi}{2}-\\alpha)=\\tan\\alpha\\)"], correct: 0, explanation: "Cos đối, sin bù, phụ chéo, khác pi tan/cot. \\(\\cos(\\pi+\\alpha) = -\\cos\\alpha\\)." },
+                { id: "e4p1q6", question: "Tìm \\(\\lim_{x\\rightarrow2}\\frac{x^2-4}{x-2}\\)", options: ["4", "2", "0", "\\(+\\infty\\)"], correct: 0, explanation: "\\(\\lim_{x\\to 2} (x+2) = 4\\)." },
+                { id: "e4p1q7", question: "Cho CSN \\(u_1=-2, q=-3\\). Số hạng thứ 4 là:", options: ["54", "-54", "162", "-162"], correct: 0, explanation: "\\(u_4 = u_1 \\cdot q^3 = -2 \\cdot (-27) = 54\\)." },
+                { id: "e4p1q8", question: "TXĐ của hàm số \\(y=\\tan(2x)\\) là:", options: ["\\(R\\backslash\\{\\frac{\\pi}{4}+k\\frac{\\pi}{2}\\}\\)", "\\(R\\backslash\\{\\frac{\\pi}{2}+k\\pi\\}\\)", "\\(R\\backslash\\{\\frac{\\pi}{4}+k\\pi\\}\\)", "\\(R\\backslash\\{k\\frac{\\pi}{2}\\}\\)"], correct: 0, explanation: "\\(2x \\ne \\frac{\\pi}{2} + k\\pi \\Rightarrow x \\ne \\frac{\\pi}{4} + k\\frac{\\pi}{2}\\)." },
+                { id: "e4p1q9", question: "Cho hàm số \\(f(x)=\\begin{cases} \\frac{x^2-1}{x-1} & \\text{khi } x \\ne 1 \\\\ 2m+1 & \\text{khi } x=1 \\end{cases}\\). Tìm m để hàm số liên tục tại x=1.", options: ["0.5", "1", "0", "-1"], correct: 0, explanation: "\\(\\lim_{x\\to 1} (x+1) = 2\\). \\(2m+1=2 \\Rightarrow m=0.5\\)." },
+                { id: "e4p1q10", question: "Đổi \\(120^{\\circ}\\) sang radian:", options: ["\\(\\frac{2\\pi}{3}\\)", "\\(\\frac{3\\pi}{4}\\)", "\\(\\frac{5\\pi}{6}\\)", "\\(\\frac{\\pi}{3}\\)"], correct: 0, explanation: "\\(120 \\cdot \\frac{\\pi}{180} = \\frac{2\\pi}{3}\\)." },
+                { id: "e4p1q11", question: "Trong không gian, hai đường thẳng không có điểm chung thì:", options: ["Song song hoặc chéo nhau", "Song song", "Chéo nhau", "Trùng nhau"], correct: 0, explanation: "Định nghĩa vị trí tương đối." },
+                { id: "e4p1q12", question: "Cho hình chóp S.ABCD đáy bình hành. Giao tuyến của (SAB) và (SCD) là:", options: ["Đường thẳng qua S song song AB", "Đường thẳng qua S song song AD", "Đường SO", "Đường MN bất kỳ"], correct: 0, explanation: "Giao tuyến của hai mặt phẳng chứa hai đường thẳng song song (AB // CD) là đường thẳng đi qua điểm chung S và song song với hai đường đó." }
+            ],
+            part2: [
+                { id: "e4p2q1", question: "Cho phương trình \\(2\\sin(2x - \\frac{\\pi}{3}) + 1 = 0\\).", items: [{text: "Phương trình tương đương \\(\\sin(2x - \\frac{\\pi}{3}) = -\\frac{1}{2}\\)", isTrue: true}, {text: "Phương trình có nghiệm \\(x = \\frac{\\pi}{12} + k\\pi\\) và \\(x = \\frac{3\\pi}{4} + k\\pi\\) \\((k \\in \\mathbb{Z})\\)", isTrue: true}, {text: "Trong khoảng \\((0; \\pi)\\) phương trình chỉ có 1 nghiệm.", isTrue: false}, {text: "Tổng các nghiệm của phương trình trong \\([0; 2\\pi]\\) là \\(3\\pi\\)", isTrue: false}], explanation: "PT \\(\\Leftrightarrow \\sin(2x-\\frac{\\pi}{3}) = -\\frac{1}{2}\\). Nghiệm: \\(\\pi/12+k\\pi\\) và \\(3\\pi/4+k\\pi\\). Trong \\((0;\\pi)\\) có 2 nghiệm (\\(\\pi/12, 3\\pi/4\\)). Tổng trong \\([0;2\\pi]\\) là \\(11\\pi/3\\)." },
+                { id: "e4p2q2", question: "Cho hình chóp S.ABCD đáy hình bình hành tâm O. G là trọng tâm tam giác SAB.", items: [{text: "Giao tuyến của (SAB) và (SCD) song song với CD.", isTrue: true}, {text: "Đường thẳng GO song song với mặt phẳng (SBC).", isTrue: false}, {text: "Mặt phẳng (GCD) cắt SA tại trung điểm.", isTrue: false}, {text: "Nếu M là trung điểm CD thì (SGM) chứa đường trung bình của hình chóp.", isTrue: false}], explanation: "a) Đúng (d // AB // CD). b) Sai, GO cắt (SBC). c) Sai. d) Sai." },
+                { id: "e4p2q3", question: "Cho cấp số cộng \\((u_n)\\) có \\(u_1=1, d=3\\).", items: [{text: "Số hạng thứ 10 là 28.", isTrue: true}, {text: "Số 100 là một số hạng của dãy.", isTrue: true}, {text: "Tổng 20 số hạng đầu là 590.", isTrue: true}, {text: "Công thức tổng quát \\(u_n = 3n-1\\).", isTrue: false}], explanation: "u10 = 1 + 9*3 = 28. 100 = 1 + 3(n-1) -> 99/3 = 33 -> n=34 (Đúng). S20 = 20/2 * (2 + 19*3) = 10 * 59 = 590. un = 1 + 3n - 3 = 3n - 2 (Sai)." },
+                { id: "e4p2q4", question: "Thống kê doanh thu (tỷ đồng) của 50 doanh nghiệp:<br>" + tables.revenue, items: [{text: "Mốt thuộc nhóm [20; 25).", isTrue: true}, {text: "Trung vị thuộc nhóm [20; 25).", isTrue: true}, {text: "Giá trị trung bình là 21.5 tỷ.", isTrue: false}, {text: "Có 17 doanh nghiệp doanh thu dưới 20 tỷ.", isTrue: true}], explanation: "Tần số lớn nhất 20 -> Mode [20;25). N=50, Me ở 25-26 -> [20;25) (tích lũy 5+12=17 < 25). Mean = (12.5*5 + 17.5*12 + 22.5*20 + 27.5*10 + 32.5*3)/50 = 21.9. Dưới 20 tỷ: 5+12=17." }
+            ],
+            part3: [
+                { id: "e4p3q1", question: "Mực nước thủy triều được tính bởi \\(h(t) = 3\\cos(\\frac{\\pi t}{6}) + 12\\) (m). Hỏi lúc 2 giờ chiều (14 giờ), mực nước là bao nhiêu mét?", keywords: ["13.5", "13,5"], explanation: "Thay t=14: \\(h = 3\\cos(14\\pi/6) + 12 = 3\\cos(7\\pi/3) + 12 = 3(0.5) + 12 = 13.5\\)." },
+                { id: "e4p3q2", question: "Một người gửi tiết kiệm 100 triệu đồng với lãi suất 6%/năm theo thể thức lãi kép. Sau 10 năm người đó nhận được bao nhiêu tiền (cả vốn lẫn lãi)? (Đơn vị: triệu đồng, làm tròn 1 chữ số thập phân).", keywords: ["179.1", "179,1"], explanation: "\\(100(1+0.06)^{10} \\approx 179.08\\)." },
+                { id: "e4p3q3", question: "Tìm giới hạn \\(L = \\lim_{x \\to 1} \\frac{\\sqrt{3x+1}-2}{x-1}\\).", keywords: ["0.75", "3/4"], explanation: "Nhân liên hợp: \\(\\lim \\frac{3x-3}{(x-1)(\\sqrt{}+2)} = \\frac{3}{2+2} = 0.75\\)." },
+                { id: "e4p3q4", question: "Cho hình chóp S.ABCD đáy vuông cạnh a. M thuộc SA sao cho SM = 1/4 SA. Mặt phẳng (P) qua M song song đáy cắt hình chóp theo thiết diện là hình vuông có diện tích bao nhiêu? (Biết \\(a=8 cm\\)).", keywords: ["4"], explanation: "Tỉ số k = 1/4. Cạnh thiết diện = a/4 = 2. Diện tích = 4." },
+                { id: "e4p3q5", question: "Cho dãy số \\((u_n)\\) với \\(u_n = \\frac{an+2}{bn+3}\\). Biết \\(u_1=1\\) và giới hạn của dãy là 2. Tính \\(a+b\\). (Biết a, b là số nguyên dương tối giản).", keywords: ["3"], explanation: "Lim = a/b = 2 => a=2b. u1 = (a+2)/(b+3) = 1 => a+2 = b+3 => a-b=1. Giải hệ: 2b-b=1 => b=1, a=2. a+b=3." },
+                { id: "e4p3q6", question: "Một sân vận động có 20 hàng ghế. Hàng đầu có 15 ghế, mỗi hàng sau thêm 2 ghế. Tổng số ghế là bao nhiêu?", keywords: ["680"], explanation: "CSC u1=15, d=2, n=20. S20 = 10(30 + 19*2) = 10(68) = 680." }
+            ]
+        }
+    };
+    
+    // Fix lại a+b câu 5 đề 4 trong code
+    allExams[4].part3[4].keywords = ["3"]; 
+
+    // --- LOGIC ---
+    let currentExamId = 1;
+    let currentGameData = null;
+    let userAnswers = { part1: {}, part2: {}, part3: {} };
+    let timerInterval;
+    let currentSection = 1;
+    let studentName = "";
+    let studentClass = "";
+    let startTime; // Variable to store start time
+
+    function selectExam(id) {
+        currentExamId = id;
+        currentGameData = allExams[id];
+        document.getElementById('exam-selection').classList.add('hidden-section');
+        document.getElementById('intro-card').classList.remove('hidden-section');
+        document.getElementById('selected-exam-title').innerText = `ĐỀ SỐ ${id}`;
+    }
+
+    function startGame() {
+        const nameInput = document.getElementById('student-name');
+        const classInput = document.getElementById('student-class');
+        
+        if (!nameInput.value.trim() || !classInput.value.trim()) {
+            document.getElementById('login-warning').classList.remove('hidden-section');
+            if(!nameInput.value.trim()) nameInput.focus();
+            else classInput.focus();
+            return;
+        }
+
+        studentName = nameInput.value.trim();
+        studentClass = classInput.value.trim();
+        
+        // Record start time
+        startTime = new Date();
+
+        document.getElementById('header-student-name').innerText = studentName;
+        document.getElementById('student-info-badge').classList.remove('hidden-section');
+        document.getElementById('intro-card').classList.add('hidden-section');
+        document.getElementById('game-area').classList.remove('hidden-section');
+        document.getElementById('timer-badge').classList.remove('hidden-section');
+        document.getElementById('header-submit-btn').classList.remove('hidden-section');
+        
+        userAnswers = { part1: {}, part2: {}, part3: {} };
+        renderPart1();
+        startTimer();
+    }
+
+    function renderPart1() {
+        const container = document.getElementById('part1-container');
+        const header = container.firstElementChild;
+        container.innerHTML = '';
+        container.appendChild(header);
+
+        currentGameData.part1.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-xl shadow-sm border border-gray-100";
+            card.innerHTML = `
+                <div class="flex space-x-3 mb-4">
+                    <span class="font-bold text-blue-600 text-lg">Câu ${index + 1}.</span>
+                    <div class="text-gray-800 text-lg math-tex">${q.question}</div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${q.options.map((opt, i) => `
+                        <button onclick="selectPart1('${q.id}', ${i}, this)" 
+                            class="option-card text-left p-4 rounded-lg border-2 border-gray-100 hover:border-blue-300 transition-all">
+                            <span class="font-bold mr-2">${String.fromCharCode(65+i)}.</span> 
+                            <span class="math-tex">${opt}</span>
+                        </button>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        MathJax.typesetPromise();
+    }
+
+    function selectPart1(qid, index, btn) {
+        userAnswers.part1[qid] = index;
+        const parent = btn.parentElement;
+        Array.from(parent.children).forEach(c => {
+            c.classList.remove('bg-blue-50', 'border-blue-500');
+            c.classList.add('border-gray-100');
+        });
+        btn.classList.remove('border-gray-100');
+        btn.classList.add('bg-blue-50', 'border-blue-500');
+        updateProgress();
+    }
+
+    function renderPart2() {
+        const container = document.getElementById('part2-container');
+        const header = container.firstElementChild;
+        container.innerHTML = '';
+        container.appendChild(header);
+
+        currentGameData.part2.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-xl shadow-sm border border-gray-100";
+            card.innerHTML = `
+                <div class="flex space-x-3 mb-4">
+                    <span class="font-bold text-purple-600 text-lg">Câu ${index + 1}.</span>
+                    <div class="text-gray-800 text-lg math-tex">${q.question}</div>
+                </div>
+                <div class="space-y-3">
+                    ${q.items.map((item, i) => `
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <span class="flex-1 mr-4 math-tex"><span class="font-bold mr-2">${String.fromCharCode(97+i)})</span> ${item.text}</span>
+                            <div class="flex space-x-2 shrink-0">
+                                <button onclick="selectPart2('${q.id}', ${i}, true, this)" class="true-false-btn w-12 h-8 rounded border font-bold text-sm transition-colors text-gray-500 border-gray-300 hover:bg-gray-100">Đ</button>
+                                <button onclick="selectPart2('${q.id}', ${i}, false, this)" class="true-false-btn w-12 h-8 rounded border font-bold text-sm transition-colors text-gray-500 border-gray-300 hover:bg-gray-100">S</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        MathJax.typesetPromise();
+    }
+
+    function selectPart2(qid, idx, val, btn) {
+        if (!userAnswers.part2[qid]) userAnswers.part2[qid] = {};
+        userAnswers.part2[qid][idx] = val;
+        
+        const group = btn.parentElement;
+        Array.from(group.children).forEach(c => c.classList.remove('selected'));
+        btn.classList.add('selected');
+        updateProgress();
+    }
+
+    function renderPart3() {
+        const container = document.getElementById('part3-container');
+        const header = container.firstElementChild;
+        container.innerHTML = '';
+        container.appendChild(header);
+
+        currentGameData.part3.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-xl shadow-sm border border-gray-100";
+            card.innerHTML = `
+                <div class="flex space-x-3 mb-4">
+                    <span class="font-bold text-orange-600 text-lg">Câu ${index + 1}.</span>
+                    <div class="text-gray-800 text-lg math-tex">${q.question}</div>
+                </div>
+                <div class="mt-4">
+                    <input type="text" 
+                        oninput="inputPart3('${q.id}', this.value)"
+                        placeholder="Nhập câu trả lời..." 
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                    >
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        MathJax.typesetPromise();
+    }
+
+    function inputPart3(qid, val) {
+        userAnswers.part3[qid] = val;
+        updateProgress();
+    }
+
+    function changeSection(dir) {
+        document.getElementById(`part${currentSection}-container`).classList.add('hidden-section');
+        currentSection += dir;
+        document.getElementById(`part${currentSection}-container`).classList.remove('hidden-section');
+
+        if (currentSection === 2 && document.getElementById('part2-container').children.length === 1) renderPart2();
+        if (currentSection === 3 && document.getElementById('part3-container').children.length === 1) renderPart3();
+
+        document.getElementById('prev-btn').disabled = currentSection === 1;
+        document.getElementById('prev-btn').classList.toggle('opacity-50', currentSection === 1);
+        
+        if (currentSection === 3) {
+            document.getElementById('next-btn').classList.add('hidden-section');
+            document.getElementById('submit-btn').classList.remove('hidden-section');
+        } else {
+            document.getElementById('next-btn').classList.remove('hidden-section');
+            document.getElementById('submit-btn').classList.add('hidden-section');
+        }
+        
+        window.scrollTo(0, 0);
+    }
+
+    function updateProgress() {
+        let c = 0;
+        c += Object.keys(userAnswers.part1).length;
+        c += Object.keys(userAnswers.part2).length;
+        c += Object.keys(userAnswers.part3).length;
+        const total = 22;
+        document.getElementById('progress-text').innerText = `${c}/${total} câu`;
+        document.getElementById('progress-bar').style.width = `${(c/total)*100}%`;
+    }
+
+    function startTimer() {
+        let t = 45 * 60;
+        timerInterval = setInterval(() => {
+            t--;
+            const m = Math.floor(t / 60);
+            const s = t % 60;
+            document.getElementById('timer').innerText = `${m}:${s<10?'0':''}${s}`;
+            if (t <= 0) {
+                clearInterval(timerInterval);
+                submitGame();
+            }
+        }, 1000);
+    }
+
+    function submitGame() {
+        document.getElementById('submit-confirm-modal').classList.remove('hidden');
+        document.getElementById('submit-confirm-modal').classList.add('flex');
+    }
+
+    function closeSubmitConfirm() {
+        document.getElementById('submit-confirm-modal').classList.add('hidden');
+        document.getElementById('submit-confirm-modal').classList.remove('flex');
+    }
+
+    function confirmSubmission() {
+        closeSubmitConfirm();
+        clearInterval(timerInterval);
+        
+        // Hide header elements
+        document.getElementById('timer-badge').classList.add('hidden-section');
+        document.getElementById('header-submit-btn').classList.add('hidden-section');
+
+        let s1 = 0, s2 = 0, s3 = 0;
+        let html = '';
+
+        // Part 1
+        html += '<h4 class="text-blue-600 font-bold text-xl mt-4">Phần I: Trắc nghiệm</h4>';
+        currentGameData.part1.forEach((q, i) => {
+            const ans = userAnswers.part1[q.id];
+            const isCorrect = ans === q.correct;
+            if (isCorrect) s1 += 0.25;
+            html += resultItem(i+1, q.question, ans !== undefined ? String.fromCharCode(65+ans) : '_', String.fromCharCode(65+q.correct), q.explanation, isCorrect);
+        });
+
+        // Part 2
+        html += '<h4 class="text-purple-600 font-bold text-xl mt-6">Phần II: Đúng/Sai</h4>';
+        currentGameData.part2.forEach((q, i) => {
+            let cnt = 0;
+            const u = userAnswers.part2[q.id] || {};
+            let subHtml = '';
+            q.items.forEach((item, idx) => {
+                const ua = u[idx];
+                const cor = ua === item.isTrue;
+                if (cor) cnt++;
+                subHtml += `<div class="flex justify-between text-sm border-b py-1"><span>${String.fromCharCode(97+idx)}) ${item.text}</span><span class="${cor?'text-green-600':'text-red-600'} font-bold">${ua===true?'Đ':ua===false?'S':'_'} (Đáp án: ${item.isTrue?'Đ':'S'})</span></div>`;
+            });
+            let pt = 0;
+            if (cnt===1) pt=0.1; else if (cnt===2) pt=0.25; else if (cnt===3) pt=0.5; else if (cnt===4) pt=1.0;
+            s2 += pt;
+            html += `<div class="bg-gray-50 p-4 rounded-lg mb-3 border border-gray-200"><p class="font-bold text-gray-800">Câu ${i+1}: <span class="math-tex">${q.question}</span></p><div class="pl-4 border-l-2 border-gray-300 my-2">${subHtml}</div><p class="text-right text-purple-600 font-bold">Đúng ${cnt}/4 ý - Được ${pt} điểm</p><p class="text-sm text-gray-500 italic mt-1"><i class="fas fa-lightbulb text-yellow-500"></i> ${q.explanation}</p></div>`;
+        });
+
+        // Part 3
+        html += '<h4 class="text-orange-600 font-bold text-xl mt-6">Phần III: Trả lời ngắn</h4>';
+        currentGameData.part3.forEach((q, i) => {
+            const ua = (userAnswers.part3[q.id] || '').trim().toLowerCase().replace(',', '.');
+            const cor = q.keywords.some(k => k.toLowerCase().replace(',', '.') === ua);
+            if (cor) s3 += 0.5;
+            html += resultItem(i+1, q.question, ua || '_', q.keywords[0], q.explanation, cor);
+        });
+
+        const totalScore = (s1 + s2 + s3).toFixed(2);
+
+        // Update Result Card
+        document.getElementById('result-student-name').innerText = `Học sinh: ${studentName}`;
+        document.getElementById('result-student-class').innerText = `Lớp: ${studentClass}`;
+        document.getElementById('final-score').innerText = totalScore;
+        document.getElementById('score-p1').innerText = s1.toFixed(2);
+        document.getElementById('score-p2').innerText = s2.toFixed(2);
+        document.getElementById('score-p3').innerText = s3.toFixed(2);
+
+        document.getElementById('game-area').classList.add('hidden-section');
+        document.getElementById('result-card').classList.remove('hidden-section');
+        document.getElementById('review-content').innerHTML = html;
+        MathJax.typesetPromise();
+        window.scrollTo(0, 0);
+
+        // Calculate Time Taken
+        const endTime = new Date();
+        const timeDiff = endTime - startTime; // in ms
+        const seconds = Math.floor((timeDiff / 1000) % 60);
+        const minutes = Math.floor((timeDiff / (1000 * 60)) % 60);
+        const durationStr = `${minutes} phút ${seconds} giây`;
+
+        // Send Data
+        const payload = {
+            timestamp: new Date().toISOString(),
+            name: studentName,
+            class: studentClass,
+            exam: `Đề ${currentExamId}`,
+            score: totalScore,
+            detail: `P1:${s1.toFixed(2)} | P2:${s2.toFixed(2)} | P3:${s3.toFixed(2)}`,
+            duration: durationStr
+        };
+
+        sendDataToSheet(payload);
+    }
+
+    function sendDataToSheet(data) {
+        if (!GOOGLE_SCRIPT_URL) {
+            document.getElementById('submit-status').innerText = "Chưa kết nối Google Sheet (vui lòng thêm URL)";
+            return;
+        }
+
+        document.getElementById('submit-status').innerHTML = '<div class="flex items-center justify-center space-x-2"><div class="spinner"></div><span>Đang gửi điểm...</span></div>';
+
+        // Convert payload to FormData for better compatibility with Google Apps Script doPost(e)
+        const formData = new FormData();
+        for (const key in data) {
+            formData.append(key, data[key]);
+        }
+
+        // Use no-cors mode for simple fire-and-forget logging to Google Sheets
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', 
+            cache: 'no-cache',
+            body: formData
+        })
+        .then(() => {
+            // In no-cors mode, we can't read the response, but if we get here, the request was sent.
+            document.getElementById('submit-status').innerText = "Đã gửi điểm thành công!";
+            document.getElementById('submit-status').classList.add('text-green-200');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            document.getElementById('submit-status').innerText = "Lỗi gửi điểm (Kiểm tra Console)";
+            document.getElementById('submit-status').classList.add('text-red-200');
+        });
+    }
+
+    function resultItem(idx, q, u, a, expl, cor) {
+        return `<div class="p-4 rounded-lg border ${cor?'bg-green-50 border-green-200':'bg-red-50 border-red-200'} mb-3">
+            <p class="font-bold">Câu ${idx}: <span class="math-tex">${q}</span></p>
+            <p class="text-sm mt-1">Bạn chọn: <span class="font-semibold">${u}</span> | Đáp án: <strong>${a}</strong></p>
+            <p class="text-sm text-gray-500 italic mt-1"><i class="fas fa-lightbulb text-yellow-500"></i> ${expl}</p>
+        </div>`;
+    }
+
+    function showDetailedReview() {
+        document.getElementById('review-modal').classList.remove('hidden');
+        document.getElementById('review-modal').classList.add('flex');
+    }
+
+    function closeReview() {
+        document.getElementById('review-modal').classList.add('hidden');
+        document.getElementById('review-modal').classList.remove('flex');
+    }
+</script>
+</body>
+</html>
